@@ -9,7 +9,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('id', 'email', 'name', 'password')
+        fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -23,10 +23,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         return user
 
-class UserProfileDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ['sex', 'height', 'weight']
+# class UserProfileDetailSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserProfile
+#         fields = ['sex', 'height', 'weight']
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
