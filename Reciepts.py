@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 
 CSV = 'general_information.csv'
-CSV_INGREDIENTS = 'ingredients.csv'
+CSV_INGREDIENTS = 'full_information.csv'
 
 HOST = 'https://eda.ru/'
 URL = 'https://eda.ru/recepty'
@@ -49,13 +49,29 @@ def get_first_table_data_text(table):
         trs = trs[1:]
     for tr in trs: # for every table row
         for td in tr.find_all('td'):
-            if td != 2:
-                name = tr.find('td').get('title')
+            name = td.get('title')
+            # print(name, type(name))
+            if name != 'Сложность рецепта':
+                try:
+                    rows.append(
+                        {
+                            f'{name}': td.find('div', class_='field-items').get_text(strip=True),
+                        }
+                    ) # data row
+                except:
+                    continue
+            else:
+                count = 0
+                divs = td.find_all('div', class_='star')
+                for div in divs:
+                    if div.find('span', class_='on'):
+                        count += 1
                 rows.append(
                     {
-                        f'{name}': td.find('div', class_='field-items').get_text(strip=True),
+                        'Сложность рецепта': count
                     }
-                ) # data row
+                )
+
     return rows
 
 def get_second_table_data_text(table):
@@ -65,15 +81,44 @@ def get_second_table_data_text(table):
     if headerow: # if there is a header row include first
         rows.append(headerow)
         trs = trs[1:]
-    for tr in trs: # for every table row
-        for td in tr.find_all('td'):
-            name = td.find('td').get('title')
+    for tr in trs:# for every table row
+        td = tr.find_all('td')
+        if len(td) > 1:
+            # for td in tr.find_all('td'):
+            try:
+                rows.append(
+                    {
+                        f'{td[1].get_text(strip=True)}': td[2].get_text(strip=True)
+                    }
+                )# data row
+            except:
+                rows.append(
+                    {
+                        f'{td[1].get_text(strip=True)}': ''
+                    }
+                )# data row
+
+        else:
             rows.append(
                 {
-                    f'{name}': td.find('div', class_='field-item').get_text(strip=True),
+                    'Title': td[0].get_text(strip=True)
                 }
-            ) # data row
+            )
+
     return rows
+
+def get_recipe_steps(recipe_steps):
+    steps = []
+    k = 1
+    for step in recipe_steps:
+        steps.append(
+            {
+              f'{k}': step.get_text(strip=True)
+            }
+        )
+        k += 1
+    return steps
+
 
 def get_recipe_content(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -81,10 +126,12 @@ def get_recipe_content(html):
 
     main_table = soup.find_all('table')[0] # Grab the first table
     ingredients_table = soup.find_all('table')[1]  # Grab the second table
+    recipe_steps = soup.find_all('div', class_='step-text')
 
     recipes.append(
         {
             'recipe_name': soup.find('div', class_='page-title').find('h2').get_text(strip=True),
+            'recipe_steps': get_recipe_steps(recipe_steps),
             'main_information': get_first_table_data_text(main_table),
             'ingredient': get_second_table_data_text(ingredients_table),
             'recipe_img': soup.find('div', class_='slick').find('a').get('href')
@@ -93,18 +140,19 @@ def get_recipe_content(html):
     return recipes
 
 def save_doc(items, path):
-    with open(path, 'w', newline='') as file:
+    with open(path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow(['Recipe name', 'Recipe Link', 'Image'])
         for item in items:
             writer.writerow([item['title'], item['link_recipe'], item['recipe_img']])
 
 def save_pecipe_doc(items, path):
-    with open(path, 'w', newline='') as file:
+    with open(path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow(['Recipe name', 'Ingredients', 'Image link', 'Main information'])
+        writer.writerow(['Recipe name', 'Ingredients', 'Image link', 'Main information', 'Recipe steps'])
         for item in items:
-            writer.writerow([item['recipe_name'], item['ingredient'], item['recipe_img'], item['main_information']])
+            writer.writerow([item['recipe_name'], item['ingredient'], item['recipe_img'], item['main_information'], \
+                             item['recipe_steps']])
 
 def parser_cooklikemary():
     PAGENATION = input('Number of pages for parsing: ')
@@ -144,12 +192,16 @@ def parsing_each_recipe():
 
     if html.status_code == 200:
         recipes = []
-        for page in range(0, len(recipe_links)):
-            html = get_html(recipe_links[page])
-            print(f'Parsing the page:  {page}')
-            recipes.extend(get_recipe_content(html.text))
-            print(recipes[-1])
-            save_pecipe_doc(recipes, CSV_INGREDIENTS)
+        for recipe_number in range(0, len(recipe_links)):
+            try:
+                html = get_html(recipe_links[recipe_number])
+                print(f'Parsing the recipe:  {recipe_number}')
+                recipes.extend(get_recipe_content(html.text))
+                # print(recipes[-1])
+                save_pecipe_doc(recipes, CSV_INGREDIENTS)
+            except:
+                print('Pass the recipe!')
+                continue
     else:
         print('Error')
 
