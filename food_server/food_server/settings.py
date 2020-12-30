@@ -25,7 +25,7 @@ SECRET_KEY = 'a#uz6u3o=o&m&rm^v0z1dstd@j*xs4ctbwqf0u!g+!g%@)ev6*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.8']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.8']
 
 
 # Application definition
@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'food_server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'djtnthkl',
+        'USER': 'djtnthkl',
+        'PASSWORD': '1CuR4tFpKjezn1d-hHAQAbjhw89ypgdJ',
+        'HOST': 'suleiman.db.elephantsql.com',
+        'PORT': '5432'
     }
 }
 

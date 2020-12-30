@@ -14,7 +14,6 @@ from rest_framework.decorators import action
 class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     queryset = Recipe.objects.all()
-    permission_classes = (permissions.UpdateOwnProfile,)
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -32,6 +31,13 @@ class ProductViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+class RecipeStepViewSet(viewsets.ModelViewSet):
+    serializer_class = Recipe_StepSerializer
+    queryset = RecipeStep.objects.all()
 
     def get(self, request):
         return self.list(request)

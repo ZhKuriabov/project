@@ -4,12 +4,14 @@ import csv
 
 CSV = 'general_information.csv'
 CSV_INGREDIENTS = 'full_information.csv'
+CSV_TEST = 'test.csv'
 
 HOST = 'https://eda.ru/'
 URL = 'https://eda.ru/recepty'
 
 HOST1 = 'https://cooklikemary.ru/'
-URL1 = 'https://cooklikemary.ru/recipe'
+URL1 = 'https://cooklikemary.ru/filter/384+49+639+447+414+50+1+142+25+26+176+625+27+38+131+39+40+51+20+52+54+55+107+78'
+#'https://cooklikemary.ru/recipe'
 
 HEADERS = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -41,11 +43,11 @@ def get_content(html):
     return recipes
 
 def get_first_table_data_text(table):
-    rows = []
+    rows = {}
     trs = table.find_all('tr')
     headerow = [td.get_text(strip=True) for td in trs[0].find_all('th')] # header row
     if headerow: # if there is a header row include first
-        rows.append(headerow)
+        rows.update(headerow)
         trs = trs[1:]
     for tr in trs: # for every table row
         for td in tr.find_all('td'):
@@ -53,7 +55,7 @@ def get_first_table_data_text(table):
             # print(name, type(name))
             if name != 'Сложность рецепта':
                 try:
-                    rows.append(
+                    rows.update(
                         {
                             f'{name}': td.find('div', class_='field-items').get_text(strip=True),
                         }
@@ -66,9 +68,9 @@ def get_first_table_data_text(table):
                 for div in divs:
                     if div.find('span', class_='on'):
                         count += 1
-                rows.append(
+                rows.update(
                     {
-                        'Сложность рецепта': count
+                        'Сложность рецепта': str(count)
                     }
                 )
 
@@ -109,14 +111,8 @@ def get_second_table_data_text(table):
 
 def get_recipe_steps(recipe_steps):
     steps = []
-    k = 1
     for step in recipe_steps:
-        steps.append(
-            {
-              f'{k}': step.get_text(strip=True)
-            }
-        )
-        k += 1
+        steps.append(step.get_text(strip=True))
     return steps
 
 
@@ -132,27 +128,34 @@ def get_recipe_content(html):
         {
             'recipe_name': soup.find('div', class_='page-title').find('h2').get_text(strip=True),
             'recipe_steps': get_recipe_steps(recipe_steps),
-            'main_information': get_first_table_data_text(main_table),
             'ingredient': get_second_table_data_text(ingredients_table),
             'recipe_img': soup.find('div', class_='slick').find('a').get('href')
         }
     )
+    recipes = [dict(item, **get_first_table_data_text(main_table)) for item in recipes]
+
     return recipes
 
 def save_doc(items, path):
     with open(path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow(['Recipe name', 'Recipe Link', 'Image'])
+        writer.writerow(['Recipe name', 'Recipe Link', 'Image small'])
         for item in items:
             writer.writerow([item['title'], item['link_recipe'], item['recipe_img']])
 
 def save_pecipe_doc(items, path):
     with open(path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow(['Recipe name', 'Ingredients', 'Image link', 'Main information', 'Recipe steps'])
+        writer.writerow(['Recipe name', 'Ingredients', 'Image link', 'Preparing Time', 'Cooking Time', 'Difficulty', 'Persons', 'Recipe steps'])
         for item in items:
-            writer.writerow([item['recipe_name'], item['ingredient'], item['recipe_img'], item['main_information'], \
-                             item['recipe_steps']])
+            try:
+                writer.writerow([item['recipe_name'], item['ingredient'], item['recipe_img'], item['Время подготовки'],
+                                 item['Время готовки'], item['Сложность рецепта'],
+                                 item['На какое количество человек расчитан рецепт'], item['recipe_steps']])
+            except:
+                writer.writerow([item['recipe_name'], item['ingredient'], item['recipe_img'], 0,
+                                 item['Время готовки'], item['Сложность рецепта'],
+                                 item['На какое количество человек расчитан рецепт'], item['recipe_steps']])
 
 def parser_cooklikemary():
     PAGENATION = input('Number of pages for parsing: ')
@@ -205,4 +208,5 @@ def parsing_each_recipe():
     else:
         print('Error')
 
-parsing_each_recipe()
+# parser_cooklikemary()
+# parsing_each_recipe()

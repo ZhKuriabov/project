@@ -71,22 +71,25 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
         return self.email
 
+class Recipe(models.Model):
+    name = models.CharField(max_length=100)
+    image_link_small = models.CharField(max_length=100, null=True)
+    image_link_big = models.CharField(max_length=100, null=True)
+    link = models.CharField(max_length=100)
+    portions = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
+    preparing_time = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
+    cooking_time = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
+    difficulty = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    weight = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
+    weight = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)], null=True)
     calories = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
     carbs = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
     fat = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
     protein = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
-    price = models.FloatField(default=0.0, max_length=100, validators=[MinValueValidator(0.0)])
-
-class Recipe(models.Model):
-    name = models.CharField(max_length=100)
-    image_link = models.CharField(max_length=100)
-    link = models.CharField(max_length=100)
-    portions = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
-    product = models.ManyToManyField(Product, null=True)
+    price = models.FloatField(default=0.0, max_length=100, validators=[MinValueValidator(0.0)], null=True)
+    recipe = models.ManyToManyField(Recipe)
 
 class userprofile_recipe(models.Model):
     profile_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="list of profiles",)
@@ -95,4 +98,8 @@ class userprofile_recipe(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     weight = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
+    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+class RecipeStep(models.Model):
+    step = models.CharField(max_length=10000)
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
