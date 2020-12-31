@@ -72,13 +72,13 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=100)
-    image_link_small = models.CharField(max_length=100, null=True)
-    image_link_big = models.CharField(max_length=100, null=True)
-    link = models.CharField(max_length=100)
+    name = models.CharField(max_length=1000)
+    image_link_small = models.CharField(max_length=1000, null=True)
+    image_link_big = models.CharField(max_length=1000, null=True)
+    link = models.CharField(max_length=1000)
     portions = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
-    preparing_time = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
-    cooking_time = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
+    preparing_time = models.CharField(max_length=1000)
+    cooking_time = models.CharField(max_length=1000)
     difficulty = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
 
 class Product(models.Model):

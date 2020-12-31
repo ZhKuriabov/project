@@ -201,7 +201,7 @@ def parsing_each_recipe():
                 print(f'Parsing the recipe:  {recipe_number}')
                 recipes.extend(get_recipe_content(html.text))
                 # print(recipes[-1])
-                save_pecipe_doc(recipes, CSV_INGREDIENTS)
+                save_pecipe_doc(recipes, CSV_TEST)
             except:
                 print('Pass the recipe!')
                 continue
