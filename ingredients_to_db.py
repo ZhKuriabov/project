@@ -4,13 +4,7 @@ import pandas as pd
 import psycopg2
 
 # Name
-# Image link small
-# Image link big
-# Link
-# Portions
-# Preparing time
-# Cooking time
-# Difficulty
+
 
 description_recipe = pd.read_csv('general_information.csv')
 full_recipe = pd.read_csv('full_information.csv')
