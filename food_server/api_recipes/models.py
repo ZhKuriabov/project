@@ -81,16 +81,6 @@ class Recipe(models.Model):
     cooking_time = models.CharField(max_length=1000)
     difficulty = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
 
-class Product(models.Model):
-    name = models.CharField(max_length=100)
-    weight = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)], null=True)
-    calories = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
-    carbs = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
-    fat = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
-    protein = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
-    price = models.FloatField(default=0.0, max_length=100, validators=[MinValueValidator(0.0)], null=True)
-    recipe = models.ManyToManyField(Recipe)
-
 class userprofile_recipe(models.Model):
     profile_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="list of profiles",)
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
@@ -99,6 +89,16 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     weight = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    weight = models.FloatField(default=0.0, max_length=10, validators=[MinValueValidator(0.0)], null=True)
+    calories = models.FloatField(default=0.0, max_length=10, validators=[MinValueValidator(0.0)])
+    carbs = models.FloatField(default=0.0, max_length=10, validators=[MinValueValidator(0.0)])
+    fat = models.FloatField(default=0.0, max_length=10, validators=[MinValueValidator(0.0)])
+    protein = models.FloatField(default=0.0, max_length=10, validators=[MinValueValidator(0.0)])
+    price = models.FloatField(default=0.0, max_length=100, validators=[MinValueValidator(0.0)], null=True)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
 
 class RecipeStep(models.Model):
     step = models.CharField(max_length=10000)
