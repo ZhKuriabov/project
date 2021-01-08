@@ -7,11 +7,6 @@ import psycopg2
 
 #preparing data for db uploading
 full_recipe = pd.read_csv('full_information.csv')
-# s = full_recipe['Recipe steps'][0]
-# s = ''.join(c for c in s if c not in ['n','r','\\'])
-# s = s.replace('xa0','').replace('.','. ').replace('. )','.)')
-# s = s.split("'")
-# s = [s[each] for each in range(len(s)) if len(s[each]) > 2]
 
 conn = psycopg2.connect("host=suleiman.db.elephantsql.com "
                         "dbname=djtnthkl "
