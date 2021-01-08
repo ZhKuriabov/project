@@ -86,8 +86,9 @@ class userprofile_recipe(models.Model):
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=1000)
     weight = models.FloatField(default=0.0, max_length=5, validators=[MinValueValidator(0.0)])
+    type_of_ingredient = models.CharField(max_length=100, null=True)
     recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
 class Product(models.Model):

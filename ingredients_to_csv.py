@@ -121,9 +121,9 @@ for i in range(328):
                 type_of_ingredient.append('ч.л.')
                 # new_value = new_value.split(' ')
             except:
-                new_value += 'на кончике'
-                new_value += ' ч.л.'
-                new_value = new_value.split(' ')
+                new_value = 0
+                # new_value += ' ч.л.'
+                # new_value = new_value.split(' ')
                 type_of_ingredient.append('мало')
         else:
             # new_value = full
@@ -207,9 +207,9 @@ for i in range(328):
                     type_of_ingredient.append('ч.л.')
                     # new_value = new_value.split(' ')
                 except:
-                    new_value += 'на кончике'
-                    new_value += ' ч.л.'
-                    new_value = new_value.split(' ')
+                    new_value = 0
+                    # new_value += ' ч.л.'
+                    # new_value = new_value.split(' ')
                     type_of_ingredient.append('мало')
                 # print('Warning ч.л.!', new_value)
             elif full.count('ст.л.') != 0:
@@ -240,8 +240,8 @@ for i in range(328):
                 # new_value = new_value.split(' ')
                 # print('Dangerous!', new_value)
             else:
-                new_value = ''
-                new_value += full
+                new_value = 0
+                # new_value += full
                 type_of_ingredient.append('по вкусу')
                 # print('???', full)
 
