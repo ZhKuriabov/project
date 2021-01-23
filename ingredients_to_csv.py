@@ -268,5 +268,5 @@ df['index'] = index
 
 del df[0]
 df.columns = ['Name', 'Weight', 'TypeOfIngredient', 'Index']
-# print(df)
-# df.to_csv('ingredients.csv', index=False)
+print(df)
+df.to_csv('ingredients.csv', index=False)

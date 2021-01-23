@@ -12,5 +12,6 @@ router.register('recipe_step', views.RecipeStepViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('login/', views.UserLoginApiView.as_view())
+    path('login/', views.UserLoginApiView.as_view()),
+    path('fullinfo/', views.FullIngredientAPIView.as_view())
 ]

@@ -8,8 +8,7 @@ from . import permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.settings import api_settings
 from rest_framework.authtoken.views import ObtainAuthToken
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import action
+from drf_multiple_model.views import ObjectMultipleModelAPIView, FlatMultipleModelAPIView
 
 class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
@@ -52,3 +51,10 @@ class UserProfile_RecipeViewSet(viewsets.ModelViewSet):
 class UserLoginApiView(ObtainAuthToken):
     """Handle creating user authentication tokens"""
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+class FullIngredientAPIView(FlatMultipleModelAPIView):
+    # add_model_type = False
+    querylist = [
+        {'queryset': Ingredient.objects.all(), 'serializer_class': IngredientSerializer},
+        {'queryset': Product.objects.all(), 'serializer_class': ProductSerializer},
+    ]

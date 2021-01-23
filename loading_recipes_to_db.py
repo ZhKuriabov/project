@@ -29,7 +29,7 @@ for i in range(1, len(description_recipe)):
                  full_recipe['Cooking Time'][i], int(full_recipe['Difficulty'][i]), full_recipe['Image link'][i],\
                  description_recipe['Image small'][i], full_recipe['Preparing Time'][i]))
 
-conn.commit()
+# conn.commit()
 
 cur.execute('SELECT * FROM api_recipes_recipe')
 rows = cur.fetchall()
