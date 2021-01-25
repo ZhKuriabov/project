@@ -1,0 +1,1 @@
+web: gunicorn food_server.food_server.wsgi
